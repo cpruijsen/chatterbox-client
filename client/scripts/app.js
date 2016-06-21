@@ -9,13 +9,51 @@
     var friends = [];
     var favoriteTweets = [];
 
-    var setOptions = function(array) {
-      $('.roomOptions option:gt(2)').remove();
+    // === FILE UPLOAD === // // NOTE: our parse doesn't have the right endpoints currently.
+    $('[value=\'Upload\']').click(function() {
+        
+      var formData = new FormData($('.fileForm')[0]);
 
-      _.each(array, function(location) {
-        $option = $('<option class="roomOption"></option>').attr('value', location).text(location);
+      $.ajax({
+        url: 'https://api.parse.com/1/classes/messages',  //Server script to process data
+        type: 'POST',
+        xhr: function() {  // Custom XMLHttpRequest
+          var myXhr = $.ajaxSettings.xhr();
+          if (myXhr.upload) { // Check if upload property exists
+            myXhr.upload.addEventListener('progress', progressHandlingFunction, false); // For handling the progress of the upload
+          }
+          return myXhr;
+        },
+        //Ajax events
+       // beforeSend: beforeSendHandler,
+        success: function(s) { console.log('Success', s, formData); },
+        error: function(e) { console.log('Success', e, formData); },
+        // Form data
+        data: formData,
+        //Options to tell jQuery not to process data or worry about content-type.
+        cache: false,
+        contentType: false,
+        processData: false
+      });
+    });
+
+    var progressHandlingFunction = function (e) {
+      if (e.lengthComputable) {
+        $('progress').attr({value: e.loaded, max: e.total });
+      }
+    };
+
+    // === ROOM and MESSAGE CONTENT STATE === // 
+    var setOptions = function(array) {
+      $('.roomOption:gt(2)').remove();
+
+      _.each(array, function(location) { // NOTE: materialize CSS does funky things to select. Have to initialize and add a hidden class.
+        $option = $('<option class="roomOption hidden"></option>').attr('value', location).text(location);
         $('.roomOptions').append($option);
       });
+
+      $('select:not([multiple]').material_select();
+
     };
 
     var addHandlers = function() {
@@ -208,7 +246,7 @@
     // === FUNCTION INVOCATIONS === // 
     getMessage(appendChats);
     // every 10 seconds we refresh chats
-    setInterval(refreshChats, 5000);
+    setInterval(refreshChats, 3000);
     // once a minute we enable a refresh of the options in the rooms dropdown.
     setInterval(function() {
       initialRoomStateSet = false;

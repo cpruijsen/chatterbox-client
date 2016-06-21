@@ -89,6 +89,9 @@ form input[type=text] {
     height: 46px;
     margin-bottom: 5px;
 }
+.hidden{
+    display: none;
+}
 
 .spinner img {
     padding: 10px;
