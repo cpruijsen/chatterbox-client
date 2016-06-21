@@ -66,6 +66,10 @@ username:"HIR"
           $room = $('<div class="roomName"></div>');
 
           $user.text('user: ' + message.username);
+          if (_.indexOf(friends, $user[0].innerHTML.slice(6)) !== -1) {
+            $text.addClass('friendMessage');
+          }
+
           $text.text('text: ' + message.text);
           $room.text('room: ' + message.roomname);
 
@@ -86,6 +90,11 @@ username:"HIR"
           $room = $('<div class="roomName"></div>');
 
           $user.text('user: ' + message.username);
+
+          if ( _.indexOf(friends, $user[0].innerHTML.slice(6)) !== -1) {
+            $text.addClass('friendMessage');
+          }
+
           $text.text('text: ' + message.text);
           $room.text('room: ' + message.roomname);
 
@@ -97,15 +106,23 @@ username:"HIR"
         });
       }
 
-
       // event handler
       $('.username').on('click', function() {
-        friends.push(this.innerHTML);
+        if (_.indexOf(friends, this.innerHTML.slice(6)) === -1) {
+          friends.push(this.innerHTML.slice(6));
+        }
+        
+        
+
+        $(this).parent().find('.messageBody').addClass('friendMessage');
 
       });
       // this changes on event handler -> add this.innerHTML to an array?
       // add a friend class to all the relevant friends
-      // 
+      /*
+    Allow users to 'befriend' other users by clicking on their user name
+    Display all messages sent by friends in bold
+    */
 
     }; 
     
@@ -167,10 +184,7 @@ username:"HIR"
 
     // === BEFRIEND === // 
 
-    /*
-    Allow users to 'befriend' other users by clicking on their user name
-    Display all messages sent by friends in bold
-    */
+    // optional space for special friend functionality.
 
     // === MESSAGES === // 
     var activeUserName = 'undefined';
