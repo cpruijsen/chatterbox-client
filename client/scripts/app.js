@@ -17,9 +17,10 @@ username:"HIR"
     var roomState = null;
     var roomOptions;
     var friends = [];
+    var favoriteTweets = [];
 
     var setOptions = function(array) {
-      $('.roomOptions option:gt(1)').remove();
+      $('.roomOptions option:gt(2)').remove();
 
       _.each(array, function(location) {
         $option = $('<option class="roomOption"></option>').attr('value', location).text(location);
@@ -67,7 +68,7 @@ username:"HIR"
           $message.append($text);
           $('#chats').append($message);
         });
-      } else if (roomState !== 'Friends') {
+      } else if (roomState !== 'Friends' && roomState !== 'Favorites') {
         var messagesToUse = _.filter(messages.results, function(message) {
           return message.roomname === roomState;
         });
@@ -89,7 +90,7 @@ username:"HIR"
           $message.append($text);
           $('#chats').append($message);
         });
-      } else {
+      } else if (roomState === 'Friends') {
         // note doesn't work for special characters currently.
         var friendMessages = _.filter(messages.results, function(message) {
           return friends.indexOf(message.username) !== -1;
@@ -108,6 +109,21 @@ username:"HIR"
           $message.append($text);
           $('#chats').append($message);
         });
+      } else { // implemented favorites
+        _.each(favoriteTweets, function(message) {
+          $message = $('<li class="chat"></li> ');
+          $user = $('<div class="username"></div>');
+          $text = $('<div class="favoriteMessage messageBody"></div>');
+          $room = $('<div class="roomName"></div>');
+          $user.text('user: ' + message.username);
+          $text.text('text: ' + message.text);
+          $room.text('room: ' + message.roomname);
+
+          $message.append($user);
+          $message.append($room);
+          $message.append($text);
+          $('#chats').append($message);
+        });
       }
       $('.username').on('click', function() {
         if (_.indexOf(friends, this.innerHTML.slice(6)) === -1) {
@@ -115,6 +131,22 @@ username:"HIR"
         } // note changed to ToggleClass (one click makes friend, another unfriend)
         $(this).parent().find('.messageBody').toggleClass('friendMessage');
       });
+      
+      $fav = $('<img class="favIcon" src="http://icons.iconarchive.com/icons/iconsmind/outline/128/Thumb-icon.png">');
+      $('.chat').append($fav);
+      $('.favIcon').on('click', function() {
+        var index = favoriteTweets.indexOf($(this).parent()[0].innerHTML);
+        if (index === -1) { // add to favorites
+          favoriteTweets.push($(this).parent()[0].innerHTML);
+        } else { // remove from favorites
+          if (index === 0) { // to make sure we can remove if the element is array[0]
+            favoriteTweets = favoriteTweets.slice(1);
+          } else {
+            favoriteTweets = favoriteTweets.slice(index - 1, index).concat(favoriteTweets.slice(index + 1));
+          }
+        }
+      });
+      // end of append fn.
     }; 
     
     var refreshChats = function() {

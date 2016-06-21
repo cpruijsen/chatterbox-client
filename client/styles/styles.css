@@ -99,4 +99,12 @@ form input[type=text] {
     background-color: #0090da;
     font-weight: bold;
 }
-
+.favoriteMessage{
+    color: tomato;
+    background-color: thistle;
+    font-weight: bold;
+}
+.favIcon{
+   width: 25px;
+   height: 25px;
+}
