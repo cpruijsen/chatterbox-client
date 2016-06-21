@@ -19,7 +19,7 @@ username:"HIR"
     var friends = [];
 
     var setOptions = function(array) {
-      $('.roomOptions option:gt(0)').remove();
+      $('.roomOptions option:gt(1)').remove();
 
       _.each(array, function(location) {
         $option = $('<option class="roomOption"></option>').attr('value', location).text(location);
@@ -29,29 +29,22 @@ username:"HIR"
 
     var addHandlers = function() {
       $('.roomOptions').on('change', function() {
-        // console.log(this);
         if ($('select option:selected')[0].innerHTML === 'Home:All') {
           roomState = null;
-          // console.log(roomState, $('select option:selected')[0].innerHTML); 
         } else {
-          roomState = $('select option:selected')[0].innerHTML;
-          // console.log(roomState, $('select option:selected')[0].innerHTML); 
+          roomState = $('select option:selected')[0].innerHTML; 
         }
       });
     };
 
-    var setRoomState = function(HTML) {
-      roomState = HTML;
-      console.log(roomState);
-    };
-
+    // note use != undefined to coerce null as well.
     var appendChats = function (messages) {
       if (!initialRoomStateSet) {
         roomOptions = _.filter(
-                    _.uniq(
-                    _.pluck(messages.results, 'roomname')), function(location) {
-                      return location != undefined && location.length > 0; })
-                    .sort();
+                      _.uniq(
+                      _.pluck(messages.results, 'roomname')), function(location) {
+                        return location != undefined && location.length > 0; })
+                      .sort();
         setOptions(roomOptions);
         addHandlers();
         initialRoomStateSet = true;
@@ -74,7 +67,7 @@ username:"HIR"
           $message.append($text);
           $('#chats').append($message);
         });
-      } else {
+      } else if (roomState !== 'Friends') {
         var messagesToUse = _.filter(messages.results, function(message) {
           return message.roomname === roomState;
         });
@@ -96,13 +89,31 @@ username:"HIR"
           $message.append($text);
           $('#chats').append($message);
         });
+      } else {
+        // note doesn't work for special characters currently.
+        var friendMessages = _.filter(messages.results, function(message) {
+          return friends.indexOf(message.username) !== -1;
+        });
+        _.each(friendMessages, function(message) {
+          $message = $('<li class="chat"></li> ');
+          $user = $('<div class="username"></div>');
+          $text = $('<div class="friendMessage messageBody"></div>');
+          $room = $('<div class="roomName"></div>');
+          $user.text('user: ' + message.username);
+          $text.text('text: ' + message.text);
+          $room.text('room: ' + message.roomname);
+
+          $message.append($user);
+          $message.append($room);
+          $message.append($text);
+          $('#chats').append($message);
+        });
       }
-      // event handler
       $('.username').on('click', function() {
         if (_.indexOf(friends, this.innerHTML.slice(6)) === -1) {
           friends.push(this.innerHTML.slice(6));
-        }
-        $(this).parent().find('.messageBody').addClass('friendMessage');
+        } // note changed to ToggleClass (one click makes friend, another unfriend)
+        $(this).parent().find('.messageBody').toggleClass('friendMessage');
       });
     }; 
     
@@ -146,14 +157,10 @@ username:"HIR"
       initialRoomStateSet = false;
       postMessage(message);
     });
-    // === BEFRIEND === // 
-    // optional space for special friend functionality.
-
     // === MESSAGES === // 
     var activeUserName = 'undefined';
     var activeUserText = 'undefined';
     var activeUserRoom = 'undefined';
-
     var message = {
       username: activeUserName,
       text: activeUserText,
