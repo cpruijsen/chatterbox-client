@@ -63,6 +63,7 @@ form input[type=text] {
     width: 70%;
     font-size: 12px;
     padding: 5px;
+    background-color: mistyRose;
 }
 
 .chat {

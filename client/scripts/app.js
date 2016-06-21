@@ -12,7 +12,6 @@ username:"HIR"
 */
 (function() {
   $(document).ready( function() {
-
     // === APPEND AND REFRESH FUNCTIONS === //
     var initialRoomStateSet = false;
     var roomState = null;
@@ -57,73 +56,54 @@ username:"HIR"
         addHandlers();
         initialRoomStateSet = true;
       }
-
       if (!roomState) {
         _.each(messages.results, function(message) {
           $message = $('<li class="chat"></li>');
           $user = $('<div class="username"></div>');
           $text = $('<div class="messageBody"></div>');
           $room = $('<div class="roomName"></div>');
-
           $user.text('user: ' + message.username);
           if (_.indexOf(friends, $user[0].innerHTML.slice(6)) !== -1) {
             $text.addClass('friendMessage');
           }
-
           $text.text('text: ' + message.text);
           $room.text('room: ' + message.roomname);
 
           $message.append($user);
           $message.append($room);
           $message.append($text);
-
           $('#chats').append($message);
         });
       } else {
         var messagesToUse = _.filter(messages.results, function(message) {
           return message.roomname === roomState;
         });
+
         _.each(messagesToUse, function(message) {
           $message = $('<li class="chat"></li> ');
           $user = $('<div class="username"></div>');
           $text = $('<div class="messageBody"></div>');
           $room = $('<div class="roomName"></div>');
-
           $user.text('user: ' + message.username);
-
           if ( _.indexOf(friends, $user[0].innerHTML.slice(6)) !== -1) {
             $text.addClass('friendMessage');
           }
-
           $text.text('text: ' + message.text);
           $room.text('room: ' + message.roomname);
 
           $message.append($user);
           $message.append($room);
           $message.append($text);
-
           $('#chats').append($message);
         });
       }
-
       // event handler
       $('.username').on('click', function() {
         if (_.indexOf(friends, this.innerHTML.slice(6)) === -1) {
           friends.push(this.innerHTML.slice(6));
         }
-        
-        
-
         $(this).parent().find('.messageBody').addClass('friendMessage');
-
       });
-      // this changes on event handler -> add this.innerHTML to an array?
-      // add a friend class to all the relevant friends
-      /*
-    Allow users to 'befriend' other users by clicking on their user name
-    Display all messages sent by friends in bold
-    */
-
     }; 
     
     var refreshChats = function() {
@@ -158,32 +138,15 @@ username:"HIR"
         }
       });
     };
-
     // === USER INTERACTION === //
-    // TODO: refactor / separate the setting of names and posting etc.
-    // better to make these input fields
-
-    // allow user to set a name
-    $('.userNameInput').on('click', function() {
-      message.username = activeUserName = prompt('What is your name?') || 'anonymous';
-    });
-
-
-    // allow user to tweet
-    $('.userTextInput').on('click', function() {
-      message.text = activeUserText = prompt('Type whatever') || '...';
-      postMessage(message);
-    });
-
-    // allow user to create a new room
-    $('.userRoomInput').on('click', function() {
-      message.roomname = activeUserRoom = prompt('Create a room - name:') || '...';
+    $('.tweetSubmit').on('click', function() {
+      message.username = activeUserName = $('.userNameInput').val();
+      message.text = activeUserText = $('.userTextInput').val();
+      message.roomname = activeUserRoom = $('.userRoomInput').val();
       initialRoomStateSet = false;
       postMessage(message);
     });
-
     // === BEFRIEND === // 
-
     // optional space for special friend functionality.
 
     // === MESSAGES === // 
@@ -196,9 +159,7 @@ username:"HIR"
       text: activeUserText,
       roomname: 'all'
     };
-
     // === FUNCTION INVOCATIONS === // 
-    // initial load.
     getMessage(appendChats);
     // every 10 seconds we refresh chats
     setInterval(refreshChats, 10000);
@@ -206,6 +167,5 @@ username:"HIR"
     setInterval(function() {
       initialRoomStateSet = false;
     }, 60000);
-
   });
 })();

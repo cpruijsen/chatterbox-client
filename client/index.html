@@ -4,24 +4,23 @@
     <meta charset="utf-8">
     <title>chatterbox</title>
     <link rel="stylesheet" href="styles/styles.css">
-
-    <!-- dependencies -->
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/underscore/underscore-min.js"></script>
-    <!-- your scripts -->
     <script src="env/config.js"></script>
     <script src="scripts/app.js"></script>
   </head>
   <body>
     <div id="main">
-      <div class='button userNameInput'><p>Change Username</p></div>
-      <div class='button userTextInput'><p>Say Something</p></div>
-      <div class='button userRoomInput'><p>Pick a room</p></div>
+      <form>
+        <input class="userNameInput" type="text" value="username"></input>
+        <input class="userTextInput" type="text" value="your message"></input>
+        <input class="userRoomInput" type="text" value="select room"></input>
+        <input class="tweetSubmit" type="Submit" value="Submit"></input>
+      </form>
       <select class='roomOptions'>
         <option value='home' class="roomOption">Home:All</option>
       </select>
       <h1>chatterbox</h1>
-      <!-- Your HTML goes here! -->
     </div>
     <div id="chats"></div>
   </body>
