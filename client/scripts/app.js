@@ -1,15 +1,5 @@
+// objectId: "nopqeVx6an"
 
-/* JSON structure:
-Object {results: Array[100]}
-results: Array[100]
-0: Object
-createdAt: "2016-06-20T22:05:08.944Z"
-objectId:"etyCd0boFz"
-roomname:"all"
-text:"trololol"
-updatedAt:"2016-06-20T22:05:08.944Z"
-username:"HIR"
-*/
 (function() {
   $(document).ready( function() {
     // === APPEND AND REFRESH FUNCTIONS === //
@@ -56,16 +46,19 @@ username:"HIR"
           $user = $('<div class="username"></div>');
           $text = $('<div class="messageBody"></div>');
           $room = $('<div class="roomName"></div>');
+          $objectId = $('<div class="objectId hidden"></div>');
           $user.text('user: ' + message.username);
           if (_.indexOf(friends, $user[0].innerHTML.slice(6)) !== -1) {
             $text.addClass('friendMessage');
           }
           $text.text('text: ' + message.text);
           $room.text('room: ' + message.roomname);
+          $objectId.text(message.objectId);
 
           $message.append($user);
           $message.append($room);
           $message.append($text);
+          $message.append($objectId);
           $('#chats').append($message);
         });
       } else if (roomState !== 'Friends' && roomState !== 'Favorites') {
@@ -78,16 +71,19 @@ username:"HIR"
           $user = $('<div class="username"></div>');
           $text = $('<div class="messageBody"></div>');
           $room = $('<div class="roomName"></div>');
+          $objectId = $('<div class="objectId hidden"></div>');
           $user.text('user: ' + message.username);
           if ( _.indexOf(friends, $user[0].innerHTML.slice(6)) !== -1) {
             $text.addClass('friendMessage');
           }
           $text.text('text: ' + message.text);
           $room.text('room: ' + message.roomname);
+          $objectId.text(message.objectId);
 
           $message.append($user);
           $message.append($room);
           $message.append($text);
+          $message.append($objectId);
           $('#chats').append($message);
         });
       } else if (roomState === 'Friends') {
@@ -100,49 +96,60 @@ username:"HIR"
           $user = $('<div class="username"></div>');
           $text = $('<div class="friendMessage messageBody"></div>');
           $room = $('<div class="roomName"></div>');
+          $objectId = $('<div class="objectId hidden"></div>');
           $user.text('user: ' + message.username);
           $text.text('text: ' + message.text);
           $room.text('room: ' + message.roomname);
+          $objectId.text(message.objectId);
 
           $message.append($user);
           $message.append($room);
           $message.append($text);
+          $message.append($objectId);
           $('#chats').append($message);
         });
       } else { // implemented favorites
         _.each(favoriteTweets, function(message) {
-          $message = $('<li class="chat"></li> ');
+          $temp = $.parseHTML(message[0]);
+          $message = $('<li class="chat"></li>');
           $user = $('<div class="username"></div>');
+          $user.text($temp[0].innerHTML);
           $text = $('<div class="favoriteMessage messageBody"></div>');
+          $text.text($temp[2].innerHTML);
           $room = $('<div class="roomName"></div>');
-          $user.text('user: ' + message.username);
-          $text.text('text: ' + message.text);
-          $room.text('room: ' + message.roomname);
+          $room.text($temp[1].innerHTML);
+          $objectId = $('<div class="objectId hidden"></div>');
+          $objectId.text($temp[3].innerHTML);
 
           $message.append($user);
           $message.append($room);
           $message.append($text);
+          $message.append($objectId);
           $('#chats').append($message);
         });
       }
       $('.username').on('click', function() {
-        if (_.indexOf(friends, this.innerHTML.slice(6)) === -1) {
+        var friendIndex = _.indexOf(friends, this.innerHTML.slice(6));
+        if (friendIndex === -1) {
           friends.push(this.innerHTML.slice(6));
-        } // note changed to ToggleClass (one click makes friend, another unfriend)
+        } else {
+          // splice friends array to take out friend
+          friends.splice(friendIndex, 1);
+        } // toggle class on the individual message
         $(this).parent().find('.messageBody').toggleClass('friendMessage');
       });
       
       $fav = $('<img class="favIcon" src="http://icons.iconarchive.com/icons/iconsmind/outline/128/Thumb-icon.png">');
       $('.chat').append($fav);
-      $('.favIcon').on('click', function() {
-        var index = favoriteTweets.indexOf($(this).parent()[0].innerHTML);
+      $('.favIcon').on('click', function() { // NOTE: v messy currently... (but works...)
+        var index = _.flatten(favoriteTweets).indexOf($.parseHTML($(this).parent()[0].innerHTML)[3].innerHTML);
         if (index === -1) { // add to favorites
-          favoriteTweets.push($(this).parent()[0].innerHTML);
+          favoriteTweets.push([$(this).parent()[0].innerHTML, $.parseHTML($(this).parent()[0].innerHTML)[3].innerHTML]);
         } else { // remove from favorites
-          if (index === 0) { // to make sure we can remove if the element is array[0]
+          if (index < 2) { // to make sure we can remove if the element is array[0]
             favoriteTweets = favoriteTweets.slice(1);
           } else {
-            favoriteTweets = favoriteTweets.slice(index - 1, index).concat(favoriteTweets.slice(index + 1));
+            favoriteTweets.splice(index - 2, 1);
           }
         }
       });
@@ -201,10 +208,10 @@ username:"HIR"
     // === FUNCTION INVOCATIONS === // 
     getMessage(appendChats);
     // every 10 seconds we refresh chats
-    setInterval(refreshChats, 10000);
+    setInterval(refreshChats, 5000);
     // once a minute we enable a refresh of the options in the rooms dropdown.
     setInterval(function() {
       initialRoomStateSet = false;
-    }, 60000);
+    }, 30000);
   });
 })();
