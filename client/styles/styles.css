@@ -1,15 +1,21 @@
 body {
-    background: #eee;
+    background: steelBlue;
     text-align: center;
     padding: 0 25px;
     font-family: arial, sans-serif;
+}
+
+.button{
+    border: 1px solid black;
+    margin: 3px;
+    cursor: pointer;
 }
 
 #main, #chats {
     width: 500px;
     margin: auto;
     text-align: left;
-    background: white;
+    background: navajowhite;
     padding: 50px 60px;
     border: solid #ddd;
     border-width: 0 1px 1px 1px;
@@ -62,11 +68,15 @@ form input[type=text] {
 .chat {
     padding: 5px;
     margin-bottom: 5px;
-    background-color: #eee;
+    background-color: transparent;
 }
 
 .chat .username {
     font-weight: 800;
+}
+.chat .roomName{
+    font-weight: 500;
+    font-size: 10px;
 }
 
 .chat:hover {
