@@ -111,3 +111,6 @@ form input[type=text] {
    width: 25px;
    height: 25px;
 }
+.submitButton{
+    margin-top: 10px;
+}

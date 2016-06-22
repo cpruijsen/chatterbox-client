@@ -22,16 +22,16 @@
     <div id="main">
       
       <form class="fileForm" enctype="multipart/form-data">
-          <input name="file" type="file" />
-          <input type="button" value="Upload" />
+          <input class="waves-effect waves-light btn" name="file" type="file" />
+          <input class="submitButton btn waves-effect waves-light" type="button" value="Upload" />
       </form>
       <progress></progress>
 
       <form>
         <input class="userNameInput" type="text" value="username"></input>
-        <input class="userTextInput" type="text" value="your message"></input>
+        <input class="userTextInput" type="text" value="your message"><i class="material-icons prefix">mode_edit</i></input>
         <input class="userRoomInput" type="text" value="select room"></input>
-        <input class="tweetSubmit" type="Submit" value="Submit"></input>
+        <input class="tweetSubmit submitButton btn waves-effect waves-light" type="Submit" value="Submit"></input>
       </form>
 
       <select class='roomOptions'>
@@ -42,7 +42,7 @@
 
       <h1>chatterbox</h1>
     </div>
-    <div id="chats"></div>
+    <ul id="chats" class="collection"></ul>
 
   </body>
 </html>

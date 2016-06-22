@@ -9,32 +9,55 @@
     var friends = [];
     var favoriteTweets = [];
 
-    // === FILE UPLOAD === // // NOTE: our parse doesn't have the right endpoints currently.
+    // === FILE || PROFILE PICTURE UPLOAD === // 
     $('[value=\'Upload\']').click(function() {
         
       var formData = new FormData($('.fileForm')[0]);
-
+      var fileURL;
+      
       $.ajax({
-        url: 'https://api.parse.com/1/classes/messages',  //Server script to process data
+        url: 'https://api.parse.com/1/files/snowden.jpg',
         type: 'POST',
-        xhr: function() {  // Custom XMLHttpRequest
-          var myXhr = $.ajaxSettings.xhr();
-          if (myXhr.upload) { // Check if upload property exists
-            myXhr.upload.addEventListener('progress', progressHandlingFunction, false); // For handling the progress of the upload
-          }
-          return myXhr;
+        contentType: 'image/jpeg',
+        data: JSON.stringify(formData),
+        success: function(s) {
+          fileURL = s; 
+          var fileMessage = {
+            'name': activeUserName,
+            'username': activeUserName,
+            'photo': {
+              'name': fileURL.name,
+              '__type': 'File'
+            }
+          };
+          sendPictureToParse(fileMessage);
+          console.log('upload done', fileURL); 
         },
-        //Ajax events
-       // beforeSend: beforeSendHandler,
-        success: function(s) { console.log('Success', s, formData); },
-        error: function(e) { console.log('Success', e, formData); },
-        // Form data
-        data: formData,
-        //Options to tell jQuery not to process data or worry about content-type.
-        cache: false,
-        contentType: false,
-        processData: false
+        error: function(e) {
+          console.log('error', e); 
+        }
       });
+
+      var sendPictureToParse = function(fileObject) {
+        $.ajax({
+          url: 'https://api.parse.com/1/classes/users',
+          type: 'POST',
+          xhr: function() { 
+            var myXhr = $.ajaxSettings.xhr();
+            if (myXhr.upload) { 
+              myXhr.upload.addEventListener('progress', progressHandlingFunction, false); 
+            }
+            return myXhr;
+          },
+          success: function(s) { console.log(s, 'uploaded'); },
+          error: function(e) { console.log(e, 'some problems'); },
+          data: JSON.stringify(fileObject),
+          cache: false,
+          contentType: false,
+          processData: false
+        });
+      };
+      
     });
 
     var progressHandlingFunction = function (e) {
@@ -43,6 +66,20 @@
       }
     };
 
+    var getPictures = function() {
+      $.ajax({
+        url: 'https://api.parse.com/1/classes/users',
+        type: 'GET',
+        contentType: 'application/json',
+        success: function (data) {
+          console.log(data);
+        },
+        error: function (data) {
+          console.error('chatterbox: Failed to send message', data);
+        }
+      });
+    };
+    
     // === ROOM and MESSAGE CONTENT STATE === // 
     var setOptions = function(array) {
       $('.roomOption:gt(2)').remove();
@@ -80,7 +117,7 @@
       }
       if (!roomState) {
         _.each(messages.results, function(message) {
-          $message = $('<li class="chat"></li>');
+          $message = $('<li class="chat collection-item avatar"></li>');
           $user = $('<div class="username"></div>');
           $text = $('<div class="messageBody"></div>');
           $room = $('<div class="roomName"></div>');
@@ -105,7 +142,7 @@
         });
 
         _.each(messagesToUse, function(message) {
-          $message = $('<li class="chat"></li> ');
+          $message = $('<li class="chat collection-item avatar"></li> ');
           $user = $('<div class="username"></div>');
           $text = $('<div class="messageBody"></div>');
           $room = $('<div class="roomName"></div>');
@@ -130,7 +167,7 @@
           return friends.indexOf(message.username) !== -1;
         });
         _.each(friendMessages, function(message) {
-          $message = $('<li class="chat"></li> ');
+          $message = $('<li class="chat collection-item avatar"></li> ');
           $user = $('<div class="username"></div>');
           $text = $('<div class="friendMessage messageBody"></div>');
           $room = $('<div class="roomName"></div>');
@@ -246,7 +283,7 @@
     // === FUNCTION INVOCATIONS === // 
     getMessage(appendChats);
     // every 10 seconds we refresh chats
-    setInterval(refreshChats, 3000);
+    setInterval(refreshChats, 6000);
     // once a minute we enable a refresh of the options in the rooms dropdown.
     setInterval(function() {
       initialRoomStateSet = false;
