@@ -1,8 +1,8 @@
 body {
-    background: steelBlue;
+    background: steelblue;
     text-align: center;
     padding: 0 25px;
-    font-family: roboto;
+    font-family: Roboto;
 }
 
 .button{
@@ -63,13 +63,14 @@ form input[type=text] {
     width: 70%;
     font-size: 12px;
     padding: 5px;
-    background-color: mistyRose;
+    background-color: mistyrose;
 }
 
 .chat {
     padding: 5px;
     margin-bottom: 5px;
     background-color: transparent;
+    overflow-wrap: break-word;
 }
 
 .chat .username {
@@ -113,4 +114,9 @@ form input[type=text] {
 }
 .submitButton{
     margin-top: 10px;
+}
+.roomOptions{
+   background-color: #26a69a;
+   color: white;
+   padding-left: 25px;
 }

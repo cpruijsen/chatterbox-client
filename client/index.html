@@ -4,45 +4,38 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>chatterbox</title>
-    <!--Import Google Icon Font-->
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!-- Import materialize.css -->
     <link type="text/css" rel="stylesheet" href="../materialize/css/materialize.min.css"  media="screen,projection"/>
     <link rel="stylesheet" href="styles/styles.css">
-
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
     <script src="bower_components/underscore/underscore-min.js"></script>
     <script src="env/config.js"></script>
     <script src="scripts/app.js"></script>
     <script type="text/javascript" src="../materialize/js/materialize.min.js"></script>
-  
   </head>
   <body>
-    
     <div id="main">
-      
       <form class="fileForm" enctype="multipart/form-data">
           <input class="waves-effect waves-light btn" name="file" type="file" />
           <input class="submitButton btn waves-effect waves-light" type="button" value="Upload" />
       </form>
-      <progress></progress>
-
+      <progress class="progress"></progress>
       <form>
-        <input class="userNameInput" type="text" value="username"></input>
-        <input class="userTextInput" type="text" value="your message"><i class="material-icons prefix">mode_edit</i></input>
-        <input class="userRoomInput" type="text" value="select room"></input>
+        <input class="userNameInput" type="text" value=""></input>
+        <input class="nameSubmit submitButton btn waves-effect waves-light" type="Submit" value="Set username"></input>
+      </form>
+      <form>
+        <input class="userTextInput" type="text" value="your message"><i class="material-icons prefix messageIcon">mode_edit</i></input>
+        <input class="userRoomInput" type="text" value="specify room"></input>
         <input class="tweetSubmit submitButton btn waves-effect waves-light" type="Submit" value="Submit"></input>
       </form>
-
       <select class='roomOptions'>
         <option value='Home' class="roomOption">Home:All</option>
         <option value='Friends' class="roomOption">Friends</option>
         <option value='Favorites' class="roomOption">Favorites</option>
       </select>
-
       <h1>chatterbox</h1>
     </div>
     <ul id="chats" class="collection"></ul>
-
   </body>
 </html>

@@ -265,16 +265,19 @@
     };
     // === USER INTERACTION === //
     $('.tweetSubmit').on('click', function() {
-      message.username = activeUserName = $('.userNameInput').val();
-      message.text = activeUserText = $('.userTextInput').val();
+      message.username = activeUserName || $('.userNameInput').val();
+      message.text = activeUserText = $('.userTextInput').val() || 'no message was supplied';
       message.roomname = activeUserRoom = $('.userRoomInput').val();
       initialRoomStateSet = false;
       postMessage(message);
     });
+    $('.nameSubmit').on('click', function() {
+      message.username = activeUserName = $('.userNameInput').val();
+    });
     // === MESSAGES === // 
-    var activeUserName = 'undefined';
-    var activeUserText = 'undefined';
-    var activeUserRoom = 'undefined';
+    var activeUserName = undefined;
+    var activeUserText = undefined;
+    var activeUserRoom = undefined;
     var message = {
       username: activeUserName,
       text: activeUserText,
